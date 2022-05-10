@@ -11,6 +11,7 @@ potential ligands within a substantial of compounds.
 
 Authors: Gaetano Calabro' <gcalabro@uci.edu> 
          David Mobley     <dmobley@uci.edu>
+         Mary Pitman      <mpitman@uci.edu>
 
 
 Licence: MIT
@@ -63,6 +64,9 @@ from .dbmol import DBMolecules
 from .dbmol import SMatrix
 from .dbmol import Molecule
 from .mcs import MCS
+from .optimal import Optimize
+from .utils import *
+from .clustering import *
 
 del dbmol
 del mcs
