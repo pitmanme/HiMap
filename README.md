@@ -22,9 +22,18 @@ free tool to plan in advance binding free energy calculations.
 * NetworkX
 * Matplotlib 
 * python > 3.8
+* R
+* rpy2
+* kneed
+* sklearn
+* scipy
+
 
 Authors
 -------
+* Mary Pitman <mpitman@uci.edu>
+    Contact for graph optimization features 
+    
 * Gaetano Calabro' <gcalabro@uci.edu>
 * David Mobley <dmobley@uci.edu>
 
