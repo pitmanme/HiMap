@@ -2,6 +2,15 @@
 CHANGELOG
 *********
 
+O-LOMAP
+=====
+- Added feature to doing clustering of ligand series in clustering.py
+- Created utils.py for graph optimization needs
+- Added python graph optimization controls in optimal.py
+- Added R Statistical enging for graph optimization in optimal_design.R	
+- Edited __init__.py to handle imports of optimization modules
+
+
 2.0.0
 =====
 - Breaking changes: replaced usage of argparse.Namespace as input to class inits (e.g. MCS) in favour of dicts.
