@@ -15,7 +15,7 @@ dependencies:
   - R
   - r-glue
   - r-ggplot2
-    - r-askpass=1.1=r40h28b5c78_2
+  - r-askpass=1.1=r40h28b5c78_2
   - r-assertthat=0.2.1=r40hc72bb7e_2
   - r-backports=1.4.0=r40h28b5c78_0
   - r-base=4.0.5=h410e534_2
