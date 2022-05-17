@@ -44,7 +44,7 @@ mol_arr_pre = np.array(list(mol_names))
 ID_list = mol_arr_pre[1:]
 
 
-# Perforrm clustering.
+# Perform clustering.
 labels, cluster_kwarg = lomap.cluster_interactive(X, ID_list)
 
 # Generate sub-arrays of clusters. Stored in dictionaries.
