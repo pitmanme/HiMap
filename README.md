@@ -59,10 +59,7 @@ with:
 
 (2)
 
-`conda install -c conda-forge lomap2`
-
-Alternatively, you can install the prerequisites and then install from source
-with:
+Install Lomap from source with:
 
 `python setup.py install`
 
