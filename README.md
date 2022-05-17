@@ -34,11 +34,10 @@ Authors
 
 Contact for the graph optimization features within this fork:
 * Mary Pitman <mpitman@uci.edu>
-    
-   
-* Gaetano Calabro' <gcalabro@uci.edu>
 * David Mobley <dmobley@uci.edu>
-
+    
+Predecessor authors:  
+* Gaetano Calabro' <gcalabro@uci.edu>
 * Mark Mackey
 * Lester Hedges
 * Antonia S J S Mey
