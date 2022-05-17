@@ -31,9 +31,11 @@ free tool to plan in advance binding free energy calculations.
 
 Authors
 -------
+
+Contact for the graph optimization features within this fork:
 * Mary Pitman <mpitman@uci.edu>
-    Contact for graph optimization features 
     
+   
 * Gaetano Calabro' <gcalabro@uci.edu>
 * David Mobley <dmobley@uci.edu>
 
