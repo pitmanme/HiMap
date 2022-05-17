@@ -54,7 +54,7 @@ https://github.com/pitmanme/OLomap/blob/main/devtools/conda-envs/olomap_env.yml
 
 with:
 
-conda env create -f olomap_env.yml
+`conda env create -f olomap_env.yml`
 
 (2)
 
