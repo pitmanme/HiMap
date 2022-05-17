@@ -1,7 +1,7 @@
 [![CI](https://github.com/OpenFreeEnergy/Lomap/actions/workflows/CI.yaml/badge.svg)](https://github.com/OpenFreeEnergy/Lomap/actions/workflows/CI.yaml)
 
 # Optimal Lomap
-This icludes design generation based on statistical optimality. 
+This includes design generation based on statistical optimality. 
 
 # Lomap
 Alchemical free energy calculations hold increasing promise 
