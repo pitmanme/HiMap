@@ -23,9 +23,9 @@ free tool to plan in advance binding free energy calculations.
 * Matplotlib 
 * python > 3.8
 * R
-* rpy2
-* kneed
-* sklearn
+* rpy2=3.4.5
+* kneed=0.7.0
+* scikit-learn=0.23.2
 * scipy
 
 
@@ -44,12 +44,27 @@ Authors
 
 ## Installation
 
+To run Optimal Lomap there are currently two installation steps:
+
+(1)
+
+For optimal lomap methods, build the conda environment from file:
+
+https://github.com/pitmanme/OLomap/blob/main/devtools/conda-envs/olomap_env.yml
+
+with:
+
+conda env create -f olomap_env.yml
+
+(2)
+
 `conda install -c conda-forge lomap2`
 
 Alternatively, you can install the prerequisites and then install from source
 with:
 
 `python setup.py install`
+
 
 Usage
 -----
