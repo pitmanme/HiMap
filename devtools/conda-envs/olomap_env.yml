@@ -12,7 +12,8 @@ dependencies:
   - boost-cpp
   - pytest
   - codecov
-  - R 
+  - R
+  - r-glue
   - rpy2=3.4.5 
   - kneed=0.7.0
   - scikit-learn=0.23.2 
