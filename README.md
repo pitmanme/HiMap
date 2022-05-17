@@ -45,24 +45,14 @@ Predecessor authors:
 
 ## Installation
 
-To run Optimal Lomap there are currently two installation steps:
-
-(1)
-
 For optimal lomap methods, build the conda environment and install Lomap from file:
 
 https://github.com/pitmanme/OLomap/blob/main/devtools/conda-envs/olomap_env.yml
 
 with:
 
-`conda env create -f olomap_env.yml`
+`conda env create -f olomap_env.yml python=3.8`
 
-
-(2)
-Copy the R file:
-https://github.com/pitmanme/OLomap/blob/main/lomap/optimal_design.R
-
-to the installed lomap directory.
 
 Usage
 -----
