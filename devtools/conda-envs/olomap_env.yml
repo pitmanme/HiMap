@@ -19,4 +19,4 @@ dependencies:
   - scipy 
   - numpy
   - pip:
-    - git+https://github.com/OpenFreeEnergy/Lomap.git@c4d33b2952b34a2af64d4ee30cd172f6187c0ab9
+    - git+https://github.com/OpenFreeEnergy/Lomap.git@28d516fba8e0a65883428e9b391d809ee500a65c
