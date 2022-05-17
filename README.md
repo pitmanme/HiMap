@@ -70,7 +70,7 @@ with:
 Usage
 -----
 To run LOMAP with optimization, 
-an example run is provided that can be run:
+an example run is provided:
 
 `python examples/example_optimize.py`
 
