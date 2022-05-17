@@ -45,7 +45,7 @@ Predecessor authors:
 
 ## Installation
 
-To run Optimal Lomap there are currently two installation steps:
+To run Optimal Lomap there are currently three installation steps:
 
 (1)
 
@@ -63,6 +63,11 @@ Install Lomap from source with:
 
 `python setup.py install`
 
+(3)
+Copy the R file:
+https://github.com/pitmanme/OLomap/blob/main/lomap/optimal_design.R
+
+to the installed lomap directory.
 
 Usage
 -----
