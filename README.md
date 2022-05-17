@@ -69,7 +69,14 @@ with:
 
 Usage
 -----
-As a commandline tool LOMAP can be simply used as:
+To run LOMAP with optimization, 
+an example run is provided that can be run:
+
+`python examples/example_optimize.py`
+
+
+To run LOMAP without optimization, 
+as a commandline tool LOMAP can be simply used as:
 `
 lomap test/basic/
 `
