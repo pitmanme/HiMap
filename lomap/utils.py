@@ -44,13 +44,13 @@ import numpy as np
 import sys
 import json
 
-__all__ = ['read_data', 'rand_sim_scores', 'clean_up', 'record_dicts', 'write_csv']
+__all__ = ['read_data', 'rand_sim_scores', 'clean_up', 'record_dicts', 'write_csv', 'clean_NaN', 'db_mol_IDs', 'multi_delim']
 
 # ****************
 # FUNCTIONS
 # ****************
 
-def clean_array(arr):
+def clean_NaN(arr):
     '''
     If entry is NaN, replace with 0.0.
         
@@ -61,6 +61,23 @@ def clean_array(arr):
     '''
     arr_cleaned = np.where(np.isnan(arr), 0.0, arr)
     return arr_cleaned
+    
+    
+def multi_delim(input):
+    '''
+    Cleans multiple delimiters to avoid read issues in
+    csv or user inputs.
+        Parameters:
+            input: string that could have varied delimiters
+
+        Returns:
+            cleaned: input where only delimiter is " ".
+    '''
+    delimiters = [" ", ",", "[", "]", ")", "("]
+    cleaned = input
+    for i in delimiters:
+        cleaned = cleaned.replace(i, " ")
+    return cleaned
 
 
 def read_data(sim_scores, **kwargs):
@@ -75,6 +92,8 @@ def read_data(sim_scores, **kwargs):
             IDs: a txt or plain text file,
                 Default: None, if no IDs are given,
                 will generate number list
+            delimiter: the default is ',' you can
+                provide other delimiters as needed.
         
         Returns:
             arr_cleaned: numpy array of similarity scores
@@ -86,15 +105,16 @@ def read_data(sim_scores, **kwargs):
     
     # Define optional arugments
     IDs = kwargs.get('IDs', None)
+    delimiter = kwargs.get('delimiter', ',')
     # Read in the similarity scores
     sim_list = []
     with open(sim_scores) as csvfile:
-        reader = csv.reader(csvfile, delimiter=' ', quoting=csv.QUOTE_NONNUMERIC)
+        reader = csv.reader(csvfile, delimiter=delimiter, quoting=csv.QUOTE_NONNUMERIC)
         for row in reader:
             sim_list.append(row)
     sim_np = np.asarray(sim_list)
     # Replace NaN scores with 0.0 if they exist.
-    arr_cleaned = clean_array(sim_np)
+    arr_cleaned = clean_NaN(sim_np)
     
     # Read in the IDs for ligands if given.
     if IDs is not None:
@@ -103,6 +123,30 @@ def read_data(sim_scores, **kwargs):
     else:
         ID_list = list(range(sim_np.shape[0]))
     return arr_cleaned, ID_list
+    
+    
+def db_mol_IDs(db_mol, n_arr):
+    '''
+    Generates ID lists from lomap.DBMolecules
+    for clustering or other uses.
+    
+        Parameters:
+            db_mol: object created by lomap.DBMolecules
+            n_arr: chemical similarity 2D numpy array
+        
+        Returns:
+            ID_list: list of ID names
+    '''
+    mol_names = ['ID']
+    for i in range(n_arr.shape[1]):
+        fname = db_mol[i].getName()
+        fsplit = fname.split(".", 1)[0]
+        mol_names.append(fsplit)
+    # Convert the name list to an np array.
+    mol_arr_pre = np.array(list(mol_names))
+    # Cleave the 'ID' entry
+    ID_list = mol_arr_pre[1:]
+    return ID_list
     
 
 def rand_sim_scores(N):
@@ -118,6 +162,7 @@ def rand_sim_scores(N):
     # Symmetrize
     b_symm = (b + b.T)/2
     return b_symm
+
 
 
 def clean_up(files):
