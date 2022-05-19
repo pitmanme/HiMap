@@ -477,19 +477,55 @@ def cluster_auto(data, ID_list, **kwargs):
     return labels
  
  
-def cluster_interactive(data, ID_list):
+def sub_arrays(labels, n_arr, ID_list):
+    '''
+    Make dictionaries containing clusters to optimize. Keys are cluster
+    numbers. Key contents are np similarity arrays (sub_arrs)
+    or ligand names (sub_IDs).
+    
+        Parameters:
+            labels: cluster numbers calculated by DBSCAN()
+            n_arr: the 2D similarity array
+            ID_list: list of ID names
+             
+        Returns:
+            sub_arrs: dict, n_arr subdivided into dict of cluster number keys
+            sub_IDs: dict, ID_list subdivided into dict of cluster number keys
+    '''
+    # Filter out ligs measured as noise. Noise is cluster -1.
+    labels_w_o_noise = [x for x in labels if x >= 0]
+    unique_labels = set(labels_w_o_noise)
+    
+    # Generate dictionary of names for submatrices, named by cluster index (0,...N)
+    sub_arrs = dict((i, "n_arr_" + str(i)) for i in range(len(unique_labels)))
+    sub_IDs = dict((i, "IDs_" + str(i)) for i in range(len(unique_labels)))
+    # Loop over the unique labels to generate similarity matrices of clusters
+    c = 0
+    for i in unique_labels:
+        # Find label entries corresponding to clusters
+        result = np.where(labels == i)
+        # Ouput dict of clustered similarity np arrays
+        sub_arrs[c] = n_arr[np.ix_(result[0][:],result[0][:])]
+        # Ouput dict of clustered ID lists
+        sub_IDs[c] = [ID_list[index] for index in result[0][:]]
+        c = c + 1
+    return sub_arrs, sub_IDs
+    
+ 
+def cluster_interactive(sim_data, ID_list):
     '''
     Function for if user wants to inspect distance data first and
     self assign the clustering neighbor distance cutoff. Also useful if
     testing different potential cutoff values. This is the current default.
     
         Parameters:
-            data: the distance array from similarity scores
+            sim_data: the similarity array from similarity scores
             ID_list: list of ID names
              
         Returns:
-            labels: cluster numbers calculated by DBSCAN()
-            cluster_kwarg: controls optimization feature for which clusters
+            sub_arrs: dict, n_arr subdivided into dict of cluster number keys
+            sub_IDs: dict, ID_list subdivided into dict of cluster number keys
+            selected_clusters: controls optimization feature for which clusters
                            are run in optimization.
                         Options are 'all',
                         Run only clusters with reference ligands, 'w_ref_lig'
@@ -509,6 +545,9 @@ def cluster_interactive(data, ID_list):
     
     header = "                    Cluster Selection table                      "
     line = "-----------------------------------------------------------------"
+    
+    # Generate distance data
+    data = 1 - sim_data
     
     # Output distance info to user.
     x, dists = k_dist(data)
@@ -563,56 +602,24 @@ def cluster_interactive(data, ID_list):
     # Take use input and translate to kwarg option.
     if user_clusters == "" or user_clusters == 'a' or user_clusters == 'all':
         # If only enter, set to default of 'all'
-        cluster_kwarg = 'all'
+        selected_clusters = 'all'
     elif user_clusters == 'w' or user_clusters == 'w_ref_lig':
-        cluster_kwarg = 'w_ref_lig'
+        selected_clusters = 'w_ref_lig'
     elif get_numeric(user_clusters):
-        cluster_kwarg = get_numeric(user_clusters)
+        selected_clusters = get_numeric(user_clusters)
         # Test if entered ints are valid.
-        if set(cluster_kwarg).issubset(set(labels)) is False:
+        if set(selected_clusters).issubset(set(labels)) is False:
             non_noise = [item for item in set(labels) if item >= 0]
             raise ValueError(f"Invalid cluster numbers. Valid numbers are {non_noise}")
     else:
         raise ValueError("Enter valid input from Cluster Selection table, example: 1, 2")
+    
+    # Generate sub-arrays of clusters. Stored in dictionaries.
+    sub_arr, sub_ID = lomap.sub_arrays(labels, sim_data, ID_list)
 
-    return labels, cluster_kwarg
+    return sub_arr, sub_ID, selected_clusters
  
  
-def sub_arrays(labels, n_arr, ID_list):
-    '''
-    Make dictionaries containing clusters to optimize. Keys are cluster
-    numbers. Key contents are np similarity arrays (sub_arrs)
-    or ligand names (sub_IDs).
-    
-        Parameters:
-            labels: cluster numbers calculated by DBSCAN()
-            n_arr: the 2D similarity array
-            ID_list: list of ID names
-             
-        Returns:
-            sub_arrs: dict, n_arr subdivided into dict of cluster number keys
-            sub_IDs: dict, ID_list subdivided into dict of cluster number keys
-    '''
-    # Filter out ligs measured as noise. Noise is cluster -1.
-    labels_w_o_noise = [x for x in labels if x >= 0]
-    unique_labels = set(labels_w_o_noise)
-    
-    # Generate dictionary of names for submatrices, named by cluster index (0,...N)
-    sub_arrs = dict((i, "n_arr_" + str(i)) for i in range(len(unique_labels)))
-    sub_IDs = dict((i, "IDs_" + str(i)) for i in range(len(unique_labels)))
-    # Loop over the unique labels to generate similarity matrices of clusters
-    c = 0
-    for i in unique_labels:
-        # Find label entries corresponding to clusters
-        result = np.where(labels == i)
-        # Ouput dict of clustered similarity np arrays
-        sub_arrs[c] = n_arr[np.ix_(result[0][:],result[0][:])]
-        # Ouput dict of clustered ID lists
-        sub_IDs[c] = [ID_list[index] for index in result[0][:]]
-        c = c + 1
-    return sub_arrs, sub_IDs
-    
-    
 def clusters2optimize(sub_arr, sub_ID, **kwargs):
     '''
     Sends clusters for optimization. Takes lomap.Optimize() kwargs.
