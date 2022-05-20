@@ -56,25 +56,102 @@ with:
 
 Usage
 -----
-To run LOMAP with optimization, 
-an example run is provided:
+#### Example scripts are included for various purposes:
+* To run LOMAP with optimization \
+    `python examples/example_optimize.py`
+* To read in scores and optimize \
+    `python examples/example_optimize_read_data.py`
+* For a basic LOMAP run without optimization \
+    `python examples/example.py`
+* For generating radial graphs with a hub \
+    `python examples/example_radial.py`
 
-`python examples/example_optimize.py`
-
-
-To run LOMAP without optimization, 
-as a commandline tool LOMAP can be simply used as:
+#### To run LOMAP without optimization, as a commandline tool:
 `
 lomap test/basic/
 `
 
-For a basic example run:
-`python examples/example.py`
 
-For generating radial graphs with a hub, run:
-`python examples/example_radial.py`
+#### If you would rather use the API directly:
+* To generate optimal designs, try:
 
-If you would rather use the API directly, try:
+```python
+import lomap
+
+#-------------------------------------------------------#
+# Generate similarity scores.
+#-------------------------------------------------------#
+# Read molecules from test directory.
+db_mol = lomap.DBMolecules('../test/radial/', output=True, radial=True)
+    
+# Generate the strict and loose symmetric similarity score matrices.
+strict, loose = db_mol.build_matrices()
+    
+# Convert the similarity matrix to numpy array
+sim_np = strict.to_numpy_2D_array()
+
+# Clean data if Lomap produces rare error. If score is NaN, replace with 0.0
+n_arr = lomap.clean_NaN(sim_np)
+
+#-------------------------------------------------------#
+# Clustering.
+#-------------------------------------------------------#
+# Create ID_list from db_mol prior to clustering.
+ID_list = lomap.db_mol_IDs(db_mol, n_arr)
+
+# Perforrm clustering.
+#   sub_arr, sub_ID:   the np_arr and ID_list subdivided by clusters
+#   selected_clusters: user selected clusters during interaction.
+sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
+
+#-------------------------------------------------------#
+# Optimization.
+#-------------------------------------------------------#
+# Example reference ligand.
+ref_ligs = ['ejm_31']
+
+# Send the user selected clusters for optimization.
+lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters, ref_ligs=ref_ligs)
+```
+
+
+* To generate optimal designs using external scores or weights, try:
+
+```python
+import lomap
+
+#-------------------------------------------------------#
+# Define input files, read data.
+#-------------------------------------------------------#
+# Input files for weight scores and ligand names.
+sim_scores_in = '../test/optimize/sim_scores.csv'
+IDs_in = '../test/optimize/mol_names.txt'
+
+# Read files, clean any potential NaN scores.
+#   Added optional parameter:
+#             delimiter: default is ','
+n_arr, ID_list = lomap.read_data(sim_scores_in, IDs = IDs_in)
+
+#-------------------------------------------------------#
+# Clustering.
+#-------------------------------------------------------#
+# Perforrm clustering.
+#   sub_arr, sub_ID:   the np_arr and ID_list subdivided by clusters
+#   selected_clusters: user selected clusters during interaction.
+sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
+
+#-------------------------------------------------------#
+# Optimization.
+#-------------------------------------------------------#
+# Example reference ligands.
+ref_ligs = ['mol_0', 'mol_1', 'mol_2', 'mol_3', 'mol_4']
+
+# Send the user selected clusters for optimization.
+lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters, ref_ligs=ref_ligs)
+```
+
+
+* To generate original LOMAP designs, try:
 
 ```python
 import lomap
