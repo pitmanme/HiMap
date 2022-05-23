@@ -38,4 +38,7 @@ sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
 ref_ligs = ['mol_0', 'mol_1', 'mol_2', 'mol_3', 'mol_4']
 
 # Send the user selected clusters for optimization.
-lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters, ref_ligs=ref_ligs)
+# Send the user selected clusters for optimization.
+lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters,
+                        ref_ligs=ref_ligs, num_edges = '2n', optim_types = ['A', 'D']
+                       )
