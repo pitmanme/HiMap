@@ -634,20 +634,33 @@ def clusters2optimize(sub_arr, sub_ID, **kwargs):
             output from lomap.sub_arrays()
             
         Optional Parameters, passed for optimization:
-            clusters2optim = 'all', vector of cluster number (ex: [1, 4]), default: 'all'
+            clusters2optim = vector of cluster numbers to optimize.
+                (ex: [1, 4]) default: 'all'
                 If 'all' is chosen, all calculated clusters will be iteratively
                 optimized.
-                       = output of lomap.DBMolecules()
-            metric (str) = 'lomap' or 'ap'
-            optim_types = []  optim1 and optim2 (str), optimization type such as
-                        'A' and 'D'. Currently two types are required.
+                
+            db_mol      = output of lomap.DBMolecules()
+            
+            optim_types = [ optim1 , optim2 ](str), optimization type such as
+                        'A' and 'D'. Currently two types are required. Options are:
+                        'A', 'D', 'P', 'mA', 'mP', 'negA', 'negD', 'random'
+                        
             ref_ligs (list of str) = user input reference ligand. If not manually
-                selected, will be calculated based on max similarity.
+                selected, will be calculated based on max similarity. Multiple can
+                be accepted.
+                
             ID_list (str) = the user can define ligand names. The default
                 is not not enter a list but instead output.
+                
+            num_edges = the number of edges requested for optimization. If 'n' is the
+                        number of ligands in each cluster, the options are:
+                        '1n', '2n', 'nlnn', 'min', 'max', integers.
+                        The edge number requested must be in the range of [min, max].
+                        If less than min, will be set to min. If greater than max,
+                        will be set to max.
         
         Outputs:
-            Optimal graphs.
+            Optimal graph outputs.
                 
     Example usages:
     lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = all, optim_types = ['A', 'D'])

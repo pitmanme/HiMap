@@ -169,15 +169,27 @@ def Optimize(np_arr, **kwargs):
         Parameters:
             np_arr = 2D similarity array, for example
                 strict_numpy
-            db_mol = output of lomap.DBMolecules()
+
                     
         Optional Parameters:
-            optim1 and optim2 (str) = optimization type such as
-                        'A' and 'D'. Currently two types are required.
+            optim_types = [ optim1 , optim2 ](str), optimization type such as
+                        'A' and 'D'. Currently two types are required. Options are:
+                        'A', 'D', 'P', 'mA', 'mP', 'negA', 'negD', 'random'
+            
+            db_mol = output of lomap.DBMolecules()
+                
             ref_lig (list of str or str) = user input reference ligand.
-            If not input, will be calculated based on max similarity.
+                If not input, will be calculated based on max similarity.
+                
             ID_list (str) = the user can define ligand names. The default
                 is not not enter a list but instead output.
+                
+            num_edges = the number of edges requested for optimization. If 'n' is the
+                        number of ligands in each cluster, the options are:
+                        '1n', '2n', 'nlnn', 'min', 'max', integers.
+                        The edge number requested must be in the range of [min, max].
+                        If less than min, will be set to min. If greater than max,
+                        will be set to max.
         
         Returns:
             Optimal graph outputs.
@@ -191,8 +203,8 @@ def Optimize(np_arr, **kwargs):
     optim_types = kwargs.get('optim_types', ['A', 'D'])
     ref_lig = kwargs.get('ref_lig', None)
     ID_list = kwargs.get('ID_list', None)
+    num_edges = kwargs.get('num_edges', 'nlnn')
     
-    # Generate pandas dataframe (df) of similarity data.
     # db_mol will be None if sim not calculated in LOMAP.
     if db_mol is None:
         # If a list of ligand names were not read in.
@@ -206,6 +218,48 @@ def Optimize(np_arr, **kwargs):
         else:
             df = df_gen(np_arr, db_mol = db_mol, ID_list = ID_list)
     
+    # Define the options for number of edges.
+    # Get length of ligands to be optimized
+    n = np_arr.shape[1]
+    min_connect = n-1
+    # Subtract 1 because ref ligs will be added.
+    max_connect = (n*(n - 1)//2) - 1
+    # Calculate edge number selection
+    try:
+        int(num_edges) == num_edges
+        num_edges = num_edges
+    except:
+        if num_edges is 'nlnn':
+            num_edges = round(n*np.log(n))
+        elif num_edges is '1n':
+            num_edges = n
+        elif num_edges is '2n':
+            num_edges = 2*n
+        elif num_edges is 'min':
+            num_edges = min_connect
+        elif num_edges is 'max':
+            num_edges = max_connect
+        else:
+            raise ValueError(f"Invalid num_edges input. Valid inputs are: "
+                              "'nlnn', '1n', '2n', 'min', 'max', and int")
+            
+    # Test edge selection to ensure in range.
+    # Design must be fully connected.
+    if num_edges < min_connect or num_edges > max_connect:
+        print(f"Requested edge number, {num_edges}, is out of bounds. "
+               "Range is [{min_connect}, {max_connect}]")
+        # If less than range make min_connect
+        if num_edges < min_connect:
+            num_edges = min_connect
+            print(f"Preparing optimization with {min_connect} edges")
+        # if more than range make max_connect
+        if num_edges > max_connect:
+            num_edges = max_connect
+            print(f"Preparing optimization with {max_connect} edges")
+    
+    # For testing
+    print(f"The input number of edges is {num_edges}")
+    
     # Convert pandas df to R df.
     r_df = pandas2ri.py2rpy(df)
     # Convert optimization types list into R str vector
@@ -215,4 +269,4 @@ def Optimize(np_arr, **kwargs):
         ref_lig = ref_lig_gen(df)
     print("The reference ligand is", ref_lig)
     # Ouput optimal graphs using optimal_design.R.
-    c=py_run_optimization(ref_lig, r_df, r_optim_types)
+    c=py_run_optimization(ref_lig, r_df, r_optim_types, num_edges)

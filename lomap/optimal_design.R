@@ -15,8 +15,6 @@ library(glue)
 theme_set( theme_gray( base_size = 20))
 theme_update( plot.title = element_text( hjust = 0.5), legend.position = 'top')
 options( scipen = 999, stringsAsFactors = FALSE)
-
-
 ################################################################
 # Optimization statistical engine function.
 ################################################################
@@ -128,16 +126,12 @@ Fedorov.exchange <- function( A.use, W.use, starting.rows, criterion, maxiter = 
   }
   
   # Controls the optimization iterations, below.
-  
   # Initialize the design matrix
   current.rows <- starting.rows
-  
   # Keep track of iterations
   current.iter <- 1
-  
   # Run the algorithm
   repeat{
-    
     # Compute the criterion for the current design
     current.D <- crit.func( A.use[ current.rows,], W.use[ current.rows, current.rows])
     
@@ -170,7 +164,6 @@ Fedorov.exchange <- function( A.use, W.use, starting.rows, criterion, maxiter = 
       current.rows <- c( current.rows[ -which( current.rows == couples$current[ which.max( couples$D.diff)[1]])], couples$candidate[ which.max( couples$D.diff)[1]])
       current.iter <- current.iter + 1
     }
-    
   }
   
   # Return the optimal design, weight matrix, criteria, and rows
@@ -183,8 +176,6 @@ Fedorov.exchange <- function( A.use, W.use, starting.rows, criterion, maxiter = 
     )
   )
 }
-
-
 ################################################################
 # End optimization statistical engine.
 ################################################################
@@ -192,7 +183,7 @@ Fedorov.exchange <- function( A.use, W.use, starting.rows, criterion, maxiter = 
 ################################################################
 # Import scores from python
 ################################################################
-run_optimization <- function(ref_lig, dataframe, r_optim_types){
+run_optimization <- function(ref_lig, dataframe, r_optim_types, num_edges){
     # ref_lig = reference ligand to use, currenlty must be manually selected
     # dataframe  = r dataframe generate from similarity scores
     # optim_type1 and optim_type2 = optimization type such as 'A' and 'D'.
@@ -201,6 +192,7 @@ run_optimization <- function(ref_lig, dataframe, r_optim_types){
     # Import atom pair scores
     optim_type1 <- r_optim_types[1]
     optim_type2 <- r_optim_types[2]
+    k_numb <- num_edges
     print(paste("Preparing", optim_type1, "optimization"))
     print(paste("Preparing", optim_type2, "optimization"))
 
@@ -224,42 +216,16 @@ run_optimization <- function(ref_lig, dataframe, r_optim_types){
       A.full[i, t( combn( 1:length( ligand.list), 2))[i,]] <- c( 1, -1)
     }
     print( paste("Number of ligands:", length( ligand.list)))
-    
-    ############ Define rational way to pick number of connections made
-    n <- length( ligand.list)
-    min_connect <- n - 1
-    max_connect <- (n*(n - 1)/2) + 1
-    print(paste("The minimum edge s=", min_connect,", maximum =", max_connect))
-    
-    # n*ln(n)
-    nlnn <- round(n*log(n))
-    twon <- 2*n
-    
-    # Naive selection of number of edges
-    calc_avg = (max_connect - min_connect)%/%2 + min_connect
-    calc_factor = round(min_connect * 1.5)
-    
-    calc_rows <- if(calc_avg < calc_factor) calc_avg else calc_factor
-    # had calc_rows instead of nlnn before
-    #print(paste('The number of chosen edges is', nlnn))
-    
-    #k_numb = nlnn
-    #k_numb = twon
-    k_numb = twon - 2
     print(paste('The number of chosen edges is', k_numb))
     ###############
 
     # Define the A and W matrices for a full design with weights
     # Output array with a 1 at column of reference ligands. Rows: number of ref ligands
     a <- rbind(diag( ncol( A.full))[ which( ligand.list %in% reference.ligand),])
-
-    #A.use <- rbind( A.full, diag( ncol( A.full))[ which( ligand.list == reference.ligand),])
     A.use <- rbind( A.full, a)
 
     # Generate array of 2's for length of reference ligands
     ref_weights <- rep(2, length(reference.ligand))
-    
-    # Recent change: originally this just had a 2 at ref_weights
     W.use <- diag( c(
       apply( A.full, 1, function(x){
         sim.scores %>%
@@ -293,12 +259,12 @@ run_optimization <- function(ref_lig, dataframe, r_optim_types){
 
     ###################################################################
     ## Combine all designs and weights together
-    string_A = 'A-optimal'
-    string_D = 'D-optimal'
+    string_A = paste(optim_type1, "-optimal")
+    string_D = paste(optim_type2, "-optimal")
         
     analysis.dat <- bind_rows(
-      a.opt.new %>% mutate( DESIGN = 'A-optimal'),
-      d.opt.new %>% mutate( DESIGN = 'D-optimal')
+      a.opt.new %>% mutate( DESIGN = string_A),
+      d.opt.new %>% mutate( DESIGN = string_D)
     ) %>%
       left_join( sim.scores %>% select( LIGAND_1, LIGAND_2, 'SIM_WEIGHT' = WEIGHT))
       
@@ -376,15 +342,14 @@ run_optimization <- function(ref_lig, dataframe, r_optim_types){
 
     # Change name based on metric type. Might need to deprecate.
     vertex.dat <- vertex.dat %>%
-      mutate( DESIGN = factor( DESIGN, levels = c( "A-optimal",  "D-optimal")))
+      mutate( DESIGN = factor( DESIGN, levels = c( string_A,  string_D)))
 
     edge.dat <- edge.dat %>%
-      mutate( DESIGN = factor( DESIGN, levels = c( "A-optimal",  "D-optimal")))
+      mutate( DESIGN = factor( DESIGN, levels = c( string_A,  string_D)))
     
    # For in development.
     #leverage.dat <- crit.dat %>%
       #mutate( DESIGN = factor( DESIGN, levels = c( "A-optimal (lomap)",  "D-optimal (lomap)")))
-
         
     # Plotting of the weights colored.
     bottom.plot <- ggplot( vertex.dat, aes( x = X, y = Y)) +
