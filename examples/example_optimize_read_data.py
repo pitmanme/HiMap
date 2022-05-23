@@ -26,8 +26,8 @@ n_arr, ID_list = lomap.read_data(sim_scores_in, IDs = IDs_in)
 #-------------------------------------------------------#
 # Clustering.
 #-------------------------------------------------------#
-# Perforrm clustering.
-#   sub_arr, sub_ID:   the np_arr and ID_list subdivided by clusters
+# Perform clustering.
+#   sub_arr, sub_ID:   the n_arr and ID_list subdivided by clusters
 #   selected_clusters: user selected clusters during interaction.
 sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
 

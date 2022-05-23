@@ -31,8 +31,8 @@ n_arr = lomap.clean_NaN(sim_np)
 # Create ID_list from db_mol prior to clustering.
 ID_list = lomap.db_mol_IDs(db_mol, n_arr)
 
-# Perforrm clustering.
-#   sub_arr, sub_ID:   the np_arr and ID_list subdivided by clusters
+# Perform clustering.
+#   sub_arr, sub_ID:   the n_arr and ID_list subdivided by clusters
 #   selected_clusters: user selected clusters during interaction.
 sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
 
@@ -43,4 +43,6 @@ sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
 ref_ligs = ['ejm_31']
 
 # Send the user selected clusters for optimization.
-lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters, ref_ligs=ref_ligs)
+lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters,
+                        ref_ligs=ref_ligs, num_edges = '2n', optim_types = ['A', 'D']
+                        )
