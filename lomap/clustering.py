@@ -623,10 +623,7 @@ def cluster_interactive(sim_data, ID_list):
 def clusters2optimize(sub_arr, sub_ID, **kwargs):
     '''
     Sends clusters for optimization. Takes lomap.Optimize() kwargs.
-    
-    Give another option for reference ligand. If it exists or is manually given
-    don't run ref_lig_gen(). Else, run.
-    
+
         Parameters:
             sub_arr = dictionary of sub arrays of similarity for each cluster.
             output from lomap.sub_arrays()
@@ -663,7 +660,7 @@ def clusters2optimize(sub_arr, sub_ID, **kwargs):
             Optimal graph outputs.
                 
     Example usages:
-    lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = all, optim_types = ['A', 'D'])
+    lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = 'all', optim_types = ['A', 'D'])
     lomap.clusters2optimize(sub_arr, sub_ID)
     '''
     clusters2optim = kwargs.get('clusters2optim', 'all')
