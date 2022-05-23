@@ -128,37 +128,21 @@ lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters, ref
 ```python
 import lomap
 
-"""
-This example file walks through how to read in molecules with LOMAP and then
-determine optimal FEP designs. This uses an interactive clustering mode.
-To select defaults during clustering, hit enter or type the displayed
-options. The user selected clusters will then be sent for design optimization.
-"""
-# *****************************************************************************
-# This example file was written by Dr. Mary Pitman. 2022
-# *****************************************************************************
-
 #-------------------------------------------------------#
-# Generate similarity scores.
+# Define input files, read data.
 #-------------------------------------------------------#
-# Read molecules from test directory.
-db_mol = lomap.DBMolecules('../test/radial/', output=True, radial=True)
-    
-# Generate the strict and loose symmetric similarity score matrices.
-strict, loose = db_mol.build_matrices()
-    
-# Convert the similarity matrix to numpy array
-sim_np = strict.to_numpy_2D_array()
+# Input files for weight scores and ligand names.
+sim_scores_in = '../test/optimize/sim_scores.csv'
+IDs_in = '../test/optimize/mol_names.txt'
 
-# Clean data if Lomap produces rare error. If score is NaN, replace with 0.0
-n_arr = lomap.clean_NaN(sim_np)
+# Read files, clean any potential NaN scores.
+#   Added optional parameter:
+#             delimiter: default is ','
+n_arr, ID_list = lomap.read_data(sim_scores_in, IDs = IDs_in)
 
 #-------------------------------------------------------#
 # Clustering.
 #-------------------------------------------------------#
-# Create ID_list from db_mol prior to clustering.
-ID_list = lomap.db_mol_IDs(db_mol, n_arr)
-
 # Perform clustering.
 #   sub_arr, sub_ID:   the n_arr and ID_list subdivided by clusters
 #   selected_clusters: user selected clusters during interaction.
@@ -167,8 +151,8 @@ sub_arr, sub_ID, selected_clusters = lomap.cluster_interactive(n_arr, ID_list)
 #-------------------------------------------------------#
 # Optimization.
 #-------------------------------------------------------#
-# Example reference ligand.
-ref_ligs = ['ejm_31']
+# Example reference ligands.
+ref_ligs = ['mol_0', 'mol_1', 'mol_2', 'mol_3', 'mol_4']
 
 # Send the user selected clusters for optimization.
 lomap.clusters2optimize(sub_arr, sub_ID, clusters2optim = selected_clusters,
