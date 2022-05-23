@@ -1,27 +1,34 @@
 [![CI](https://github.com/OpenFreeEnergy/Lomap/actions/workflows/CI.yaml/badge.svg)](https://github.com/OpenFreeEnergy/Lomap/actions/workflows/CI.yaml)
+## Contents of this file
 
-# Optimal Lomap
-This includes design generation based on statistical optimality. 
+ * O-LOMAP Introduction
+ * Requirements
+ * Authors
+ * Installation
+ * Usage
+ * Troubleshooting
 
-# Lomap
+O-LOMAP Introduction
+-------
+
+O-LOMAP includes design generation based on statistical optimality. 
 Alchemical free energy calculations hold increasing promise 
 as an aid to drug discovery efforts. However, applications of 
 these techniques in discovery projects have been relatively 
 rare, partly because of the difficulty of planning and setting up 
 calculations. The lead optimization mapper (LOMAP) was 
-introduced as an automated algorithm to plan efficient relative 
-free energy calculations between potential ligands within 
-a substantial of compounds. The original LOMAP code was mainly
-based on commercial APIs such as OpenEye and Schrodinger. The aim 
-of this project is to develop a new version of LOMAP based on free
-avalaible APIs such as RDKit offering the scientific community a 
-free tool to plan in advance binding free energy calculations.
+introduced as an automated algorithm to plan relative 
+free energy calculations between potential ligands. LOMAP was further
+developed to be based on free, open-source APIs such as RDKit. O-LOMAP
+now includes clustering of ligand series, and optimization of free
+energy perturbation networks. 
 
-## Prerequisites
+Requirements
+-------
 * RDKit Release > 2021
 * NetworkX
 * Matplotlib 
-* python > 3.8
+* python >= 3.8
 * R
 * rpy2=3.4.5
 * kneed=0.7.0
@@ -43,7 +50,8 @@ Predecessor authors:
 * Antonia S J S Mey
 * Jenke Scheen
 
-## Installation
+Installation
+-----
 
 For optimal lomap methods, build the conda environment and install Lomap from file:
 
@@ -199,3 +207,7 @@ strict, loose = db_mol.build_matrices()
 nx_graph = db_mol.build_graph() 
 ```
 
+Troubleshooting
+-----
+* Why is optimization not finding a random seed design? \
+Check that similarity scores are not zero, nearly zero, or in large part near zero. If the similarity scores are non-zero but very dissimilar, try decreasing the neighbor distance cutoff value (epsilon) selected during clustering. If the similarity scores are zero or near non-zero, this may be an example of a rare bug in the LOMAP similarity scores. Check that the ligands and indeed very dissimilar. If they are not, consider using an alternate similarity metric.
