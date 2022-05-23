@@ -19,4 +19,4 @@ dependencies:
   - r-ggpubr
   - kneed
   - pip:
-    - git+https://github.com/OpenFreeEnergy/Lomap.git@9b71910287b9a7fd1e17bf1bf819cef1cf4e1ed1
+    - git+https://github.com/OpenFreeEnergy/Lomap.git@4d75e2ff158709486a0ab0802f7ec8d9d8a2ae10
