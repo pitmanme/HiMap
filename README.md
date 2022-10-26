@@ -1,17 +1,17 @@
 [![CI](https://github.com/OpenFreeEnergy/Lomap/actions/workflows/CI.yaml/badge.svg)](https://github.com/OpenFreeEnergy/Lomap/actions/workflows/CI.yaml)
 ## Contents of this file
 
- * O-LOMAP Introduction
+ * HiMap Introduction
  * Requirements
  * Authors
  * Installation
  * Usage
  * Troubleshooting
 
-O-LOMAP Introduction
+HiMap Introduction
 -------
 
-O-LOMAP includes design generation based on statistical optimality. 
+HiMap includes design generation based on statistical optimality. 
 Alchemical free energy calculations hold increasing promise 
 as an aid to drug discovery efforts. However, applications of 
 these techniques in discovery projects have been relatively 
@@ -19,7 +19,7 @@ rare, partly because of the difficulty of planning and setting up
 calculations. The lead optimization mapper (LOMAP) was 
 introduced as an automated algorithm to plan relative 
 free energy calculations between potential ligands. LOMAP was further
-developed to be based on free, open-source APIs such as RDKit. O-LOMAP
+developed to be based on free, open-source APIs such as RDKit. HiMap
 now includes clustering of ligand series, and optimization of free
 energy perturbation networks. 
 
